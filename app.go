@@ -44,7 +44,6 @@ type players struct {
 func initGame() *players {
 	g := players{}
 	g.colors = [8]string{"Green", "Orange", "White", "Blue", "Red", "Yellow", "Purple", "Superbright"}
-	//g.gamerStatus[1] = Joined // temp - dead led
 	return &g
 }
 

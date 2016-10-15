@@ -4,10 +4,46 @@
 var mqttClient;
 var colours = ["Green", "Orange", "White", "Blue", "Red", "Yellow", "Purple", "Superbright"];
 
+function enableColor(playerColor) {
+    var handle = $('#stats-' + playerColor);
+    switch (playerColor) {
+        case "Green":
+            handle.css({"background-color": "#43a047"});
+            break;
+        case "Orange":
+            handle.css({"background-color": "#ff8f00"});
+            break;
+        case "White":
+            handle.css({"background-color": "#fefefe"});
+            break;
+        case "Blue":
+            handle.css({"background-color": "#2979ff"});
+            break;
+        case "Red":
+            handle.css({"background-color": "#e53935"});
+            break;
+        case "Yellow":
+            handle.css({"background-color": "#ffeb3b"});
+            break;
+        case "Purple":
+            handle.css({"background-color": "#9575cd"});
+            break;
+        case "Superbright":
+            handle.css({"background-color": "#2979ff"});
+            break;
+    }
+}
+
 function incomingMessageHandler(message) {
     switch (message.destinationName) {
         case "GamerDisconnect":
-        console.info("Gamer disconnected:" + message.payloadString)
+            console.info("Gamer disconnected: " + message.payloadString);
+            $('#stats-' + message.payloadString).css({"background-color": "#f5f5f5"});
+            break;
+        case "GamerJoined":
+            enableColor(message.payloadString);
+            break;
+
     }
 }
 
@@ -55,6 +91,7 @@ $(function () {
                 html += '<div class="col-xs-4"></div>';
                 html += '</div>';
                 view.append(html);
+                mqttClient.subscribe("GamerJoined");
                 mqttClient.subscribe("GamerDisconnect"); // can get confirmation from borker before starting game?
 
                 // Stats
@@ -64,7 +101,7 @@ $(function () {
                     for (var j = 0; j < 4; j++) {
                         var colour = colours[4*i + j];
                         html += '<div class="col-xs-3">';
-                        html += '<div id=stats-"' + colour + '" class="well well-sm">' + colour + '</div>';
+                        html += '<div id="stats-' + colour + '" class="well well-sm">' + colour + '</div>';
                         html += '</div>';
                     }
                     html += '</div>';
